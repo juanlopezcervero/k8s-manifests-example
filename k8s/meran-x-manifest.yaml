@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meran-deployment-x
+  namespace: apis-ns
+spec:
+  selector:
+    matchLabels:
+      app: meran-x
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: meran-x
+    spec:
+      containers:
+      - name: meran-x
+        image: juanlopezcervero/coruscant:0.0.8-SNAPSHOT
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "150Mi"
+          limits:
+            memory: "250Mi"
+        env:
+        - name: GREETING_WORD
+          valueFrom:
+            configMapKeyRef:
+              # The ConfigMap containing the value you want to assign to SPECIAL_LEVEL_KEY
+              name: meran-example-config
+              # Specify the key associated with the value
+              key: word.to.say.hi
+        - name: MY_NAME
+          valueFrom:
+            configMapKeyRef:
+              # The ConfigMap containing the value you want to assign to SPECIAL_LEVEL_KEY
+              name: meran-example-config
+              # Specify the key associated with the value
+              key: say.my.name
+        - name: SECRET_ONE
+          valueFrom:
+            secretKeyRef:
+              name: meran-example-secrets
+              key: meran.secret.one
+        - name: SECRET_TWO
+          valueFrom:
+            secretKeyRef:
+              name: meran-example-secrets
+              key: meran.secret.two
+        - name: MY_BROTHER
+          value: meran-example-y-service.delta-ns:8080  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: meran-example-x-service
+  namespace: apis-ns  
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+  selector:
+    app: meran-x

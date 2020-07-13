@@ -1,0 +1,16 @@
+apiVersion: skaffold/v2beta5
+kind: Config
+metadata:
+  name: coruscant
+build:
+  artifacts:
+  - image: juanlopezcervero/coruscant
+    jib:
+      project: com.nousix:coruscant
+deploy:
+  kubectl:
+    manifests:
+    - k8s/meran-apis-namespace.yaml
+    - k8s/meran-config.yaml
+    - k8s/meran-secrets.yaml
+    - k8s/meran-x-manifest.yaml
