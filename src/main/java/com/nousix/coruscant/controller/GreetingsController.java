@@ -3,6 +3,8 @@ package com.nousix.coruscant.controller;
 import com.nousix.coruscant.controller.dto.GreetingDTO;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/")
 public class GreetingsController {
+
+    private static final Logger log = LoggerFactory.getLogger(GreetingsController.class);
 
     @Value("${GREETING_WORD:Hello}")
     String greetingWord;
@@ -31,10 +35,12 @@ public class GreetingsController {
 
     @GetMapping(value = "/hello")
     public GreetingDTO sayHello(@RequestParam(required = false) Boolean propagate) {
+        log.info("Entering the greeting controller");
         GreetingDTO brother = null;
         if (!brotherService.equals("none") && (propagate == null || propagate )) {
             String url = "http://" + brotherService + "/hello?propagate=false";
             try {
+                log.info("Calling brother at url: " + url);
                 HttpResponse<GreetingDTO> greetingDTOHttpResponse = Unirest.get(url).asObject(GreetingDTO.class);
                 if (greetingDTOHttpResponse.isSuccess()) {
                     brother = greetingDTOHttpResponse.getBody();
@@ -42,6 +48,7 @@ public class GreetingsController {
                     brother = new GreetingDTO("ERROR", "url", Arrays.asList(String.valueOf(greetingDTOHttpResponse.getStatus()), greetingDTOHttpResponse.getStatusText()), retrieveHostname(), null);
                 }
             } catch (Exception e) {
+                log.error("Brother with error", e);
                 List<String> secrets = Arrays.asList(e.getMessage(), e.toString());
                 brother = new GreetingDTO("ERROR", "url", secrets , retrieveHostname(), null);
             }
