@@ -52,6 +52,7 @@ public class GreetingsController {
                 List<String> secrets = Arrays.asList(e.getMessage(), e.toString());
                 brother = new GreetingDTO("ERROR", "url", secrets , retrieveHostname(), null);
             }
+            log.info("jola" );
             brother.setUrl(url);
         }
         return new GreetingDTO(greetingWord, name, Arrays.asList(secretOne, secretTwo), retrieveHostname(), brother);

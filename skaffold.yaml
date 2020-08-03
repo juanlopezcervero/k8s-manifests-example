@@ -11,6 +11,7 @@ deploy:
   kubectl:
     manifests:
     - k8s/meran-apis-namespace.yaml
-    - k8s/meran-config.yaml
+    - k8s/config/meran-config.yaml
     - k8s/meran-secrets.yaml
-    - k8s/meran-x-manifest.yaml
+    - k8s/meran-x-deployment.yaml
+    - k8s/meran-x-service.yaml

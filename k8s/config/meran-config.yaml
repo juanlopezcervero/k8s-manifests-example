@@ -5,4 +5,4 @@ metadata:
   namespace: apis-ns
 data:
   word.to.say.hi: Hola
-  say.my.name: Meran
+  say.my.name: MerAn
